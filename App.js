@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Image,View } from 'react-native';
 import Header from './componentes/Header';
-import Formulario from './componentes/Formulario'
+import Formulario from './componentes/Formulario';
+
 
 
 

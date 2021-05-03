@@ -46,8 +46,8 @@ const Formulario = () => {
                 onValueChange={ moneda => obtenerMoneda(moneda) }
             >
                 <Picker.Item label="-Seleccione-" value="" />
-                {criptomonedas.map ( cripto => (
-                    <Picker.Item key={cripto.CoinInfo.Id} label={cripto.CoinInfo.FullName} value={cripto.CoinInfo.Name}/>
+                { criptomonedas.map ( cripto => (
+                    <Picker.Item key={ cripto.CoinInfo.Id} label={cripto.CoinInfo.FullName} value={cripto.CoinInfo.Name}/>
 
                 ) ) }
                
