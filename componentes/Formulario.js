@@ -1,13 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {Text, View, StyleSheet,TouchableHighlight,Alert } from 'react-native';
 import{Picker} from '@react-native-picker/picker';
 import axios from 'axios';
 
-const Formulario = () => {
+const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, guardarConsultaAPI} ) => {
 
-    const [ moneda, guardarMoneda ] = useState('');
-    const [ criptomoneda, guardarCriptomoneda ] = useState('');
-    const [ criptomonedas, guardarCriptomonedas ] = useState('');
+   
+    const [ criptomonedas, guardarCriptomonedas ] = useState([]);
 
     useEffect(() => {
         const consultarAPI = async () => {
@@ -16,13 +15,41 @@ const Formulario = () => {
         guardarCriptomonedas(resultado.data.Data);
         }     
         consultarAPI();
-    }, []);
-
-
+    }, []); 
+ 
+    //Almacena las seecciones del usuario
     const obtenerMoneda = moneda => {
         guardarMoneda(moneda)
     }
 
+    const obtenerCriptomoneda = cripto => {
+        guardarCriptomoneda(cripto)
+    }
+
+    const cotizarPrecio = () => {
+        if(moneda.trim() === '' || criptomoneda.trim() === '') {
+            mostrarAlerta();
+            return;
+        }
+
+        // Cambiar el state de consulta api
+
+        guardarConsultarAPI(true)
+    }
+
+ 
+
+    const mostrarAlerta = () => {
+        Alert.alert(
+            'Error...',
+            'Ambos campos son requeridos',
+            [
+                {text: 'OK'}
+            ]
+
+
+        )
+    }
     return ( 
         
         <View>
@@ -30,6 +57,7 @@ const Formulario = () => {
             <Picker
                 selectedValue={moneda}
                 onValueChange={ moneda => obtenerMoneda(moneda)}
+                itemStyle={{ height: 120 }}
             >
                 <Picker.Item label="-Seleccione-" value="" />
                 <Picker.Item label="Dolar de Estados Unidos" value="USD" />
@@ -42,16 +70,24 @@ const Formulario = () => {
             <Text style={styles.label}>Criptomoneda</Text>
 
             <Picker
-                selectedValue={moneda}
-                onValueChange={ moneda => obtenerMoneda(moneda) }
+                selectedValue={criptomoneda}
+                onValueChange={ cripto => obtenerCriptomoneda(cripto) }
+                itemStyle={{ height: 120 }}
             >
-                <Picker.Item label="-Seleccione-" value="" />
-                { criptomonedas.map ( cripto => (
-                    <Picker.Item key={ cripto.CoinInfo.Id} label={cripto.CoinInfo.FullName} value={cripto.CoinInfo.Name}/>
-
-                ) ) }
+            <Picker.Item label="-Seleccione-" value="" />
+            { criptomonedas.map ( cripto=> (
+                <Picker.Item key={cripto.CoinInfo.Id} label={cripto.CoinInfo.FullName} value={cripto.CoinInfo.Name}/>
+            ) ) }
+              
                
             </Picker>
+
+            <TouchableHighlight
+                style={styles.btnCotizar}
+                onPress={ ()=> cotizarPrecio ()}
+            >
+                <Text style={styles.textoCotizar}> Cotizar</Text>
+            </TouchableHighlight>
  
         </View>
      );
@@ -64,7 +100,22 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontSize: 22,
         marginVertical: 20,
+    },
+    btnCotizar:{
+        backgroundColor: '#5E49E2',
+        padding: 10,
+        marginTop: 20,
+    },
+    textoCotizar:{
+        color: '#FFF',
+        fontSize: 18,
+        fontFamily: 'Lato-Black',
+        textTransform: 'uppercase',
+        textAlign: 'center',
     }
 
 });
+
+
+
 export default Formulario;
