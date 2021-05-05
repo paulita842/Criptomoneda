@@ -1,7 +1,10 @@
 import React, { useState, useEffect} from 'react';
-import { StyleSheet, Image,View } from 'react-native';
+import { StyleSheet, Image,View, ScrollView, ActivityIndicator } from 'react-native';
+import axios from 'axios';
 import Header from './componentes/Header';
 import Formulario from './componentes/Formulario';
+import Cotizacion from './componentes/Cotizacion';
+
 
 
 
@@ -12,16 +15,39 @@ const  App = () => {
   const [ moneda, guardarMoneda ] = useState('');
   const [ criptomoneda, guardarCriptomoneda ] = useState('');
   const [ consultarAPI, guardarConsultarAPI] = useState(false);
+  const [ restultado, guardarResultado] = useState({});
+  const [ cargando, guardarCargando] = useState(false);
 
   useEffect(()=>{
-    if(consultarAPI){
+    const cotizarCriptomoneda = async () => {
+      if (consultarAPI){
+        //consultar la api para obtener la cotización
+        const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
+        const resultado =await axios.get(url);
 
+        //console.log(ressultado.data.DISPLAY[criptomoneda][moneda]);
+        guardarCargando(true);
+
+        // Ocular el spinner y mostrar el resultado
+        setTimeout(() => {
+          guardarResultado(resultado.data.DISPLAY[criptomoneda][moneda] );
+          guardarConsultarAPI(false);
+          guardarCargando(false);
+
+        }, 3000);
+     }
     }
+    cotizarCriptomoneda(); 
   }, [consultarAPI]);
+
+  // mostrar el spinner o el resultado
+
+  const componente = cargando ? <ActivityIndicator size="large" color="#5E49E2"/> :  <Cotizacion resultado={restultado}/>
 
 
   return ( 
-  <>
+    <>
+  <ScrollView>
     <Header />
 
      <Image
@@ -36,16 +62,21 @@ const  App = () => {
         guardarMoneda={guardarMoneda}
         guardarCriptomoneda={guardarCriptomoneda}
         guardarConsultarAPI={guardarConsultarAPI}
-      
-      
       />
      </View>
-  </>
+     <View style={{margin : 1}}>
+        {componente}
+     </View>
+
+     
+      
+      </ScrollView>
+      </>
+  
    
    );
 };
  
-
 const styles = StyleSheet.create({
   
   imagen:{

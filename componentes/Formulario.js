@@ -3,16 +3,16 @@ import {Text, View, StyleSheet,TouchableHighlight,Alert } from 'react-native';
 import{Picker} from '@react-native-picker/picker';
 import axios from 'axios';
 
-const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, guardarConsultaAPI} ) => {
+const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, guardarConsultarAPI} ) => {
 
-   
+    
     const [ criptomonedas, guardarCriptomonedas ] = useState([]);
 
     useEffect(() => {
         const consultarAPI = async () => {
-        const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD';
-        const resultado = await axios.get(url);
-        guardarCriptomonedas(resultado.data.Data);
+            const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD';
+            const resultado = await axios.get(url);
+            guardarCriptomonedas(resultado.data.Data);
         }     
         consultarAPI();
     }, []); 
@@ -26,18 +26,17 @@ const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, 
         guardarCriptomoneda(cripto)
     }
 
+    //const () => (){}
     const cotizarPrecio = () => {
-        if(moneda.trim() === '' || criptomoneda.trim() === '') {
+        if (moneda.trim() === '' || criptomoneda.trim () === '') {
             mostrarAlerta();
+
             return;
         }
+      
+            guardarConsultarAPI(true)
 
-        // Cambiar el state de consulta api
-
-        guardarConsultarAPI(true)
     }
-
- 
 
     const mostrarAlerta = () => {
         Alert.alert(
@@ -46,7 +45,7 @@ const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, 
             [
                 {text: 'OK'}
             ]
-
+           
 
         )
     }
@@ -55,7 +54,7 @@ const Formulario = ( {moneda, criptomoneda, guardarMoneda, guardarCriptomoneda, 
         <View>
             <Text style={styles.label}>Moneda</Text>
             <Picker
-                selectedValue={moneda}
+                selectedValue={moneda} 
                 onValueChange={ moneda => obtenerMoneda(moneda)}
                 itemStyle={{ height: 120 }}
             >
